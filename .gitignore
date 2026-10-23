@@ -1,0 +1,31 @@
+# local-only: the pytest suite stays off the published repo
+/tests/
+
+# never commit these, whatever else happens with `git add -A`
+.env
+.env.*
+*.pem
+*.key
+*.p12
+id_rsa*
+credentials.*
+secrets.*
+
+# benchmark outputs / normalized data (keep the shipped package data)
+*.json
+!src/abench/data/*.json
+*.jsonl
+openai_*
+sglang_*
+vllm_*
+deepswe_v1.1/
+lmcache_v1/
+
+# build / tooling
+build/
+dist/
+*.egg-info/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store

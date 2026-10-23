@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-bench"
+dynamic = ["version"]
+description = "Agentic inference benchmark: closed-loop replay of real agent trajectories against any OpenAI-compatible server"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+keywords = ["llm", "inference", "benchmark", "agentic", "serving"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Topic :: System :: Benchmark",
+]
+dependencies = [
+    "aiohttp>=3.8",
+]
+
+[project.optional-dependencies]
+# Dataset files are zstd-compressed JSONL: reading them uses the
+# zstandard package when installed and falls back to the zstd CLI.
+# Token counting uses transformers if available, tiktoken as a fallback,
+# or a char/4 estimate when neither is installed.
+data = ["zstandard"]
+tokenizer = ["transformers", "tiktoken"]
+# tqdm powers the optional turn-level progress bar; without it the run
+# falls back to the periodic [progress] heartbeat.
+ui = ["tqdm"]
+dev = ["build", "zstandard"]
+
+[project.scripts]
+abench = "abench.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+# recording_rates.json: per-model tok/s table used by the gap replay;
+# bundled with the wheel.
+abench = ["data/recording_rates.json"]
+
+[tool.setuptools.dynamic]
+version = { attr = "abench._version.__version__" }
